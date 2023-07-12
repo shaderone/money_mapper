@@ -16,10 +16,18 @@ class BottomNavBar extends StatelessWidget {
             },
             destinations: const [
               NavigationDestination(
-                icon: Icon(Icons.history),
-                label: "Home",
+                label: "History",
+                icon: Icon(Icons.history, color: Colors.grey),
+                selectedIcon: Icon(Icons.history_rounded),
               ),
-              NavigationDestination(icon: Icon(Icons.dashboard_rounded), label: "Category"),
+              NavigationDestination(
+                label: "Category",
+                icon: Icon(
+                  Icons.dashboard_outlined,
+                  color: Colors.grey,
+                ),
+                selectedIcon: Icon(Icons.dashboard_rounded),
+              ),
             ],
           );
         });

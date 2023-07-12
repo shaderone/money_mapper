@@ -8,31 +8,37 @@ class HomeScreen extends StatelessWidget {
 
   static ValueNotifier<int> currentIndexNotifier = ValueNotifier(0);
 
-  final List<String> _title = ['Transaction History', 'Category'];
   final _pages = [
     const TransactionPage(),
-    const CategoryPage(),
+    CategoryPage(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: ValueListenableBuilder(
-            valueListenable: currentIndexNotifier,
-            builder: (BuildContext context, int currentIndex, Widget? _) {
-              return Text(_title[currentIndex]);
-            }),
-      ),
       body: ValueListenableBuilder(
           valueListenable: currentIndexNotifier,
           builder: (BuildContext context, int currentIndex, Widget? _) {
             return _pages[currentIndex];
           }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Add New Transaction',
-        child: const Icon(Icons.add),
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          if (currentIndexNotifier.value == 0) {
+            print("trans");
+          } else {
+            print("cats");
+          }
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder(
+                valueListenable: currentIndexNotifier,
+                builder: (BuildContext context, int currentIndex, Widget? _) {
+                  return Text(currentIndex == 0 ? "New Transaction" : "New Category");
+                }),
+            const Icon(Icons.add),
+          ],
+        ),
       ),
       bottomNavigationBar: const BottomNavBar(),
     );
