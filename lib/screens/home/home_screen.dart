@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
           builder: (BuildContext context, int currentIndex, Widget? _) {
             return _pages[currentIndex];
           }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ElevatedButton(
         onPressed: () {
           if (currentIndexNotifier.value == 0) {
