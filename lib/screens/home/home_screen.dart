@@ -1,31 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_app/db/category/category_db.dart';
+import 'package:money_management_app/models/category/category_model.dart';
 import 'package:money_management_app/screens/home/widgets/bottom_nav_bar.dart';
 import 'package:money_management_app/screens/pages/category/category_page.dart';
 import 'package:money_management_app/screens/pages/transaction/transaction_page.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   static ValueNotifier<int> currentIndexNotifier = ValueNotifier(0);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final _pages = [
     const TransactionPage(),
     CategoryPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    CategoryDB().getAllCategories().then((value) => print(value[0].categoryName ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ValueListenableBuilder(
-          valueListenable: currentIndexNotifier,
+          valueListenable: HomeScreen.currentIndexNotifier,
           builder: (BuildContext context, int currentIndex, Widget? _) {
             return _pages[currentIndex];
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ElevatedButton(
         onPressed: () {
-          if (currentIndexNotifier.value == 0) {
+          if (HomeScreen.currentIndexNotifier.value == 0) {
             print("trans");
           } else {
+            CategoryDB().insertNewCategory(CategoryModel(categoryName: "Salary", type: CategoryType.income));
             print("cats");
           }
         },
@@ -33,7 +48,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ValueListenableBuilder(
-                valueListenable: currentIndexNotifier,
+                valueListenable: HomeScreen.currentIndexNotifier,
                 builder: (BuildContext context, int currentIndex, Widget? _) {
                   return Text(currentIndex == 0 ? "New Transaction" : "New Category");
                 }),
