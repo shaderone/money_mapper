@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:money_management_app/constants/routes.dart';
 import 'package:money_management_app/models/category/category_model.dart';
 import 'package:money_management_app/screens/home/home_screen.dart';
+import 'package:money_management_app/screens/pages/category/new_category_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomeScreen(),
+      routes: {
+        Routes.newCategoryPageRoute: (context) => const NewCategoryPage(),
+      },
     );
   }
 }

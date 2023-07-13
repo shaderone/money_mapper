@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_app/constants/routes.dart';
 import 'package:money_management_app/db/category/category_db.dart';
-import 'package:money_management_app/models/category/category_model.dart';
 import 'package:money_management_app/screens/home/widgets/bottom_nav_bar.dart';
 import 'package:money_management_app/screens/pages/category/category_page.dart';
 import 'package:money_management_app/screens/pages/transaction/transaction_page.dart';
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    CategoryDB().getAllCategories().then((value) => print(value[0].categoryName ));
+    CategoryDB().getAllCategories().then((value) => print(value[0].categoryName));
   }
 
   @override
@@ -40,7 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
           if (HomeScreen.currentIndexNotifier.value == 0) {
             print("trans");
           } else {
-            CategoryDB().insertNewCategory(CategoryModel(categoryName: "Salary", type: CategoryType.income));
+            Navigator.of(context).pushNamed(Routes.newCategoryPageRoute);
+            //CategoryDB().insertNewCategory(CategoryModel(categoryName: "Salary", type: CategoryType.income));
             print("cats");
           }
         },
