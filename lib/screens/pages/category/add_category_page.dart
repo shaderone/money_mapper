@@ -99,6 +99,13 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Added Category '$categoryNameInput'"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          duration: const Duration(seconds: 2),
+          margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+          behavior: SnackBarBehavior.floating,
+          elevation: 0,
           action: SnackBarAction(
             label: "OK",
             onPressed: () {},

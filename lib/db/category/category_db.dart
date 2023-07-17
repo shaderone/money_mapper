@@ -57,6 +57,8 @@ class CategoryDB extends ChangeNotifier implements CategoryDBFunctions {
         }
       });
     }
+    incomeCategoryListNotifier.notifyListeners();
+    expenseCategoryListNotifier.notifyListeners();
   }
 
   @override
