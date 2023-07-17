@@ -16,8 +16,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _pages = [
-    CategoryPage(),
     const TransactionPage(),
+    CategoryPage(),
   ];
 
   @override
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ElevatedButton(
         onPressed: () {
-          if (HomeScreen.currentIndexNotifier.value == 1) {
+          if (HomeScreen.currentIndexNotifier.value == 0) {
             Navigator.of(context).pushNamed(Routes.newTransactionPageRoute);
           } else {
             //CategoryDB.instance.clearDB();
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ValueListenableBuilder(
                 valueListenable: HomeScreen.currentIndexNotifier,
                 builder: (BuildContext context, int currentIndex, Widget? _) {
-                  return Text(currentIndex == 1 ? "New Transaction" : "New Category");
+                  return Text(currentIndex == 0 ? "New Transaction" : "New Category");
                 }),
             const Icon(Icons.add),
           ],

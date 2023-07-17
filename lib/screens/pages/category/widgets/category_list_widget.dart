@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_app/db/category/category_db.dart';
 import 'package:money_management_app/models/category/category_model.dart';
 
 class CategoryListWidget extends StatelessWidget {
@@ -20,7 +21,9 @@ class CategoryListWidget extends StatelessWidget {
                 minVerticalPadding: 20,
                 title: Text(category.categoryName),
                 trailing: IconButton(
-                  onPressed: () => print("deleted"),
+                  onPressed: () {
+                    CategoryDB.instance.deleteCategory(category.key);
+                  },
                   icon: const Icon(Icons.delete),
                 ),
               );

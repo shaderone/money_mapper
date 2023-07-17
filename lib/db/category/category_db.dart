@@ -9,7 +9,7 @@ abstract class CategoryDBFunctions {
   Future<List<CategoryModel>> getAllCategories();
   Future<void> insertNewCategory(CategoryModel categoryModel);
   Future<void> clearDB();
-  //Future<void> deleteCategory(String key);
+  Future<void> deleteCategory(int key);
 }
 
 class CategoryDB extends ChangeNotifier implements CategoryDBFunctions {
@@ -33,7 +33,7 @@ class CategoryDB extends ChangeNotifier implements CategoryDBFunctions {
     //clear any existing values before displaying, else previous values will be duplicated
     _categorydb = await Hive.openBox<CategoryModel>(_CategoryDBName);
     await _categorydb.add(categoryModel);
-    await refreshUI();
+    refreshUI();
   }
 
   @override
@@ -62,10 +62,18 @@ class CategoryDB extends ChangeNotifier implements CategoryDBFunctions {
   }
 
   @override
+  Future<void> deleteCategory(int key) async {
+    _categorydb = await Hive.openBox<CategoryModel>(_CategoryDBName);
+    print(key);
+    await _categorydb.delete(key);
+    refreshUI();
+  }
+
+  @override
   Future<void> clearDB() async {
     _categorydb = await Hive.openBox<CategoryModel>(_CategoryDBName);
     await _categorydb.clear();
     print("db cleared");
-    await refreshUI();
+    refreshUI();
   }
 }
