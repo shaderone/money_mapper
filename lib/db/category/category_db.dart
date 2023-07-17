@@ -48,7 +48,6 @@ class CategoryDB extends ChangeNotifier implements CategoryDBFunctions {
     final categoryList = await getAllCategories();
     incomeCategoryListNotifier.value.clear();
     expenseCategoryListNotifier.value.clear();
-    //print("clist length - ${categoryList.length}");
     if (categoryList.isNotEmpty) {
       await Future.forEach(categoryList, (category) {
         if (category.type == CategoryType.income) {
@@ -58,17 +57,13 @@ class CategoryDB extends ChangeNotifier implements CategoryDBFunctions {
         }
       });
     }
-    //print('incnotifier - ${incomeCategoryListNotifier.value} \n expNotifier - ${expenseCategoryListNotifier.value}');
-
-    incomeCategoryListNotifier.notifyListeners();
-    expenseCategoryListNotifier.notifyListeners();
   }
 
   @override
   Future<void> clearDB() async {
     _categorydb = await Hive.openBox<CategoryModel>(_CategoryDBName);
     await _categorydb.clear();
-    //print("db cleared");
+    print("db cleared");
     await refreshUI();
   }
 }

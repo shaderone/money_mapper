@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 234, 209, 21)),
         useMaterial3: true,
       ),
-      //home: const Scaffold(body: SafeArea(child: Center(child: Text("test")))),
       home: const HomeScreen(),
       routes: {
         Routes.newCategoryPageRoute: (context) => const AddNewCategoryPage(),

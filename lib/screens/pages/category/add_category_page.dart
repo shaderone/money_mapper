@@ -26,7 +26,6 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
           ElevatedButton.icon(
             onPressed: () {
               handleNewCategory();
-              //print("name - $categoryNameInput, type - ${selectedCategoryTypeNotifier.value}");
             },
             label: const Text("Done"),
             icon: const Icon(Icons.check_circle_outline_outlined),
@@ -134,7 +133,6 @@ class CustomRadioWidget extends StatelessWidget {
               onChanged: (newValue) {
                 if (newValue == null) return;
                 selectedCategoryTypeNotifier.value = newValue;
-                //print("selected category type - ${selectedCategoryTypeNotifier.value}");
               },
             );
           },

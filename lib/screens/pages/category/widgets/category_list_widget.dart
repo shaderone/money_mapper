@@ -14,7 +14,7 @@ class CategoryListWidget extends StatelessWidget {
           )
         : ListView.separated(
             physics: const BouncingScrollPhysics(),
-            separatorBuilder: (BuildContext context, int index) {
+            itemBuilder: (BuildContext context, int index) {
               final category = categoryList[index];
               return ListTile(
                 minVerticalPadding: 20,
@@ -25,10 +25,10 @@ class CategoryListWidget extends StatelessWidget {
                 ),
               );
             },
-            itemBuilder: (BuildContext context, int index) {
+            separatorBuilder: (BuildContext context, int index) {
               return index == 0 ? const SizedBox() : const Divider(height: 1);
             },
-            itemCount: categoryList.length + 1,
+            itemCount: categoryList.length,
           );
   }
 }

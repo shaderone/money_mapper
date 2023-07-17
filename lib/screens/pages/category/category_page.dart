@@ -50,10 +50,6 @@ class CategoryPage extends StatelessWidget {
               ValueListenableBuilder<List<CategoryModel>>(
                 valueListenable: CategoryDB.instance.incomeCategoryListNotifier,
                 builder: (BuildContext context, List<CategoryModel> categoryList, Widget? child) {
-                  //print("income list - ${categoryList.length}");
-                  //for (var index = 0; index < categoryList.length; index++) {
-                  //  print("$index) - ${categoryList[index].categoryName} ${categoryList[index].type}");
-                  //}
                   return CategoryListWidget(categoryList: categoryList);
                 },
               ),
@@ -62,7 +58,6 @@ class CategoryPage extends StatelessWidget {
               ValueListenableBuilder<List<CategoryModel>>(
                 valueListenable: CategoryDB.instance.expenseCategoryListNotifier,
                 builder: (BuildContext context, List<CategoryModel> categoryList, Widget? child) {
-                  //print("expense list - ${categoryList.length}");
                   return CategoryListWidget(categoryList: categoryList);
                 },
               ),
