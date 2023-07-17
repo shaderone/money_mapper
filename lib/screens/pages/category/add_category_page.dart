@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_app/models/category/category_model.dart';
 
-class NewCategoryPage extends StatefulWidget {
-  const NewCategoryPage({super.key});
+import '../../../db/category/category_db.dart';
+
+final ValueNotifier<CategoryType> selectedCategoryTypeNotifier = ValueNotifier(CategoryType.income);
+
+class AddNewCategoryPage extends StatefulWidget {
+  const AddNewCategoryPage({super.key});
 
   @override
-  State<NewCategoryPage> createState() => _NewCategoryPageState();
+  State<AddNewCategoryPage> createState() => _AddNewCategoryPageState();
 }
 
-class _NewCategoryPageState extends State<NewCategoryPage> {
-  static final ValueNotifier<CategoryType> selectedCategoryNotifier = ValueNotifier(CategoryType.income);
+class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
   final _formKey = GlobalKey<FormState>();
   final _categoryNameController = TextEditingController();
 
@@ -21,7 +24,10 @@ class _NewCategoryPageState extends State<NewCategoryPage> {
         title: const Text("New Category"),
         actions: [
           ElevatedButton.icon(
-            onPressed: () => handleNewCategory,
+            onPressed: () {
+              handleNewCategory();
+              //print("name - $categoryNameInput, type - ${selectedCategoryTypeNotifier.value}");
+            },
             label: const Text("Done"),
             icon: const Icon(Icons.check_circle_outline_outlined),
           ),
@@ -48,7 +54,6 @@ class _NewCategoryPageState extends State<NewCategoryPage> {
                   },
                   onSaved: (newValue) {
                     _categoryNameController.clear();
-                    _NewCategoryPageState.selectedCategoryNotifier.value = CategoryType.income;
                   },
                   controller: _categoryNameController,
                   decoration: const InputDecoration(
@@ -77,13 +82,21 @@ class _NewCategoryPageState extends State<NewCategoryPage> {
     );
   }
 
-  void handleNewCategory() {
+  handleNewCategory() async {
+    //validate inputs
     if (_formKey.currentState!.validate()) {
+      //clear input by using onSaved
       _formKey.currentState!.save();
-      CategoryModel(
+
+      //parse the details into model
+      final categoryModel = CategoryModel(
         categoryName: categoryNameInput!,
-        type: _NewCategoryPageState.selectedCategoryNotifier.value,
+        type: selectedCategoryTypeNotifier.value,
       );
+      //call insert method to insert new Category into the db
+      CategoryDB.instance.insertNewCategory(categoryModel);
+      //go back
+      Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Added Category '$categoryNameInput'"),
@@ -113,14 +126,15 @@ class CustomRadioWidget extends StatelessWidget {
       children: [
         Text(title),
         ValueListenableBuilder(
-          valueListenable: _NewCategoryPageState.selectedCategoryNotifier,
+          valueListenable: selectedCategoryTypeNotifier,
           builder: (BuildContext context, CategoryType type, Widget? _) {
             return Radio<CategoryType>(
               value: categoryType,
               groupValue: type,
               onChanged: (newValue) {
                 if (newValue == null) return;
-                _NewCategoryPageState.selectedCategoryNotifier.value = newValue;
+                selectedCategoryTypeNotifier.value = newValue;
+                //print("selected category type - ${selectedCategoryTypeNotifier.value}");
               },
             );
           },

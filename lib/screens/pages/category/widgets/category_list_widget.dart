@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_app/models/category/category_model.dart';
 
 class CategoryListWidget extends StatelessWidget {
-  const CategoryListWidget({
-    super.key,
-  });
+  final List<CategoryModel> categoryList;
+
+  const CategoryListWidget({super.key, required this.categoryList});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      physics: const BouncingScrollPhysics(),
-      itemCount: 20,
-      separatorBuilder: (BuildContext context, int index) {
-        return ListTile(
-          minVerticalPadding: 20,
-          title: Text('Tab 1 Item $index'),
-          trailing: IconButton(
-            onPressed: () => print("deleted"),
-            icon: const Icon(Icons.delete),
-          ),
-        );
-      },
-      itemBuilder: (BuildContext context, int index) {
-        return index == 0 ? const SizedBox() : const Divider(height: 1);
-      },
-    );
+    return categoryList.isEmpty
+        ? const Center(
+            child: Text("List is Empty"),
+          )
+        : ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            separatorBuilder: (BuildContext context, int index) {
+              final category = categoryList[index];
+              return ListTile(
+                minVerticalPadding: 20,
+                title: Text(category.categoryName),
+                trailing: IconButton(
+                  onPressed: () => print("deleted"),
+                  icon: const Icon(Icons.delete),
+                ),
+              );
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return index == 0 ? const SizedBox() : const Divider(height: 1);
+            },
+            itemCount: categoryList.length + 1,
+          );
   }
 }

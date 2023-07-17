@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'widgets/category_list_widget.dart';
+import 'package:money_management_app/db/category/category_db.dart';
+import 'package:money_management_app/models/category/category_model.dart';
+import 'package:money_management_app/screens/pages/category/widgets/category_list_widget.dart';
 
 class CategoryPage extends StatelessWidget {
   CategoryPage({super.key});
@@ -43,10 +44,28 @@ class CategoryPage extends StatelessWidget {
               ),
             ),
           ),
-          body: const TabBarView(
+          body: TabBarView(
             children: [
-              CategoryListWidget(),
-              CategoryListWidget(),
+              //first TabView
+              ValueListenableBuilder<List<CategoryModel>>(
+                valueListenable: CategoryDB.instance.incomeCategoryListNotifier,
+                builder: (BuildContext context, List<CategoryModel> categoryList, Widget? child) {
+                  //print("income list - ${categoryList.length}");
+                  //for (var index = 0; index < categoryList.length; index++) {
+                  //  print("$index) - ${categoryList[index].categoryName} ${categoryList[index].type}");
+                  //}
+                  return CategoryListWidget(categoryList: categoryList);
+                },
+              ),
+
+              //Second TabView
+              ValueListenableBuilder<List<CategoryModel>>(
+                valueListenable: CategoryDB.instance.expenseCategoryListNotifier,
+                builder: (BuildContext context, List<CategoryModel> categoryList, Widget? child) {
+                  //print("expense list - ${categoryList.length}");
+                  return CategoryListWidget(categoryList: categoryList);
+                },
+              ),
             ],
           ),
         ),

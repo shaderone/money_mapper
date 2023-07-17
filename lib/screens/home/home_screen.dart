@@ -16,14 +16,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _pages = [
-    const TransactionPage(),
     CategoryPage(),
+    const TransactionPage(),
   ];
 
   @override
   void initState() {
     super.initState();
-    CategoryDB().getAllCategories().then((value) => print(value[0].categoryName));
+    CategoryDB.instance.refreshUI();
   }
 
   @override
@@ -37,12 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ElevatedButton(
         onPressed: () {
-          if (HomeScreen.currentIndexNotifier.value == 0) {
-            print("trans");
+          if (HomeScreen.currentIndexNotifier.value == 1) {
+            Navigator.of(context).pushNamed(Routes.newTransactionPageRoute);
           } else {
+            //CategoryDB.instance.clearDB();
             Navigator.of(context).pushNamed(Routes.newCategoryPageRoute);
-            //CategoryDB().insertNewCategory(CategoryModel(categoryName: "Salary", type: CategoryType.income));
-            print("cats");
           }
         },
         child: Row(
@@ -51,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ValueListenableBuilder(
                 valueListenable: HomeScreen.currentIndexNotifier,
                 builder: (BuildContext context, int currentIndex, Widget? _) {
-                  return Text(currentIndex == 0 ? "New Transaction" : "New Category");
+                  return Text(currentIndex == 1 ? "New Transaction" : "New Category");
                 }),
             const Icon(Icons.add),
           ],
