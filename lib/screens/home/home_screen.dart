@@ -38,10 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: ElevatedButton(
         onPressed: () {
           if (HomeScreen.currentIndexNotifier.value == 0) {
-            Navigator.of(context).pushNamed(Routes.newTransactionPageRoute);
+            Navigator.of(context).pushNamed(Routes.addTransactionPageRoute);
           } else {
             //CategoryDB.instance.clearDB();
-            Navigator.of(context).pushNamed(Routes.newCategoryPageRoute);
+            Navigator.of(context).pushNamed(Routes.addCategoryPageRoute);
           }
         },
         child: Row(

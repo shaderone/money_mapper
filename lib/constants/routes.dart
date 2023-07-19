@@ -1,4 +1,4 @@
 class Routes {
-  static const newCategoryPageRoute = '/newCategoryPageRoute';
-  static const newTransactionPageRoute = '/newTransactionPageRoute';
+  static const addCategoryPageRoute = '/addCategoryPageRoute';
+  static const addTransactionPageRoute = '/addTransactionPageRoute';
 }

@@ -22,6 +22,7 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("New Category"),
+        leadingWidth: 30,
         actions: [
           ElevatedButton.icon(
             onPressed: () {
