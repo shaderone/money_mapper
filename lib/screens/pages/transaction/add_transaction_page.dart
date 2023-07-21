@@ -34,6 +34,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   Object? dropDownValue;
 
+  final FocusNode _dropdownFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _dropdownFocusNode.dispose();
+    super.dispose();
+  }
+
   void resetField() {
     //unfocus any selected widget
   }
@@ -56,132 +64,130 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           const SizedBox(width: 20),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Purpose
-              const TextField(
-                decoration: InputDecoration(
-                  label: Text("Transaction Name"),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 15),
-              //Amount
-              const TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  label: Text("Amount"),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 15),
-              //Category Dropdown
-              DropdownButtonFormField(
-                //isExpanded: true,
-                value: dropDownValue,
-                //hint: const Text("Choose Category"),
-
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Choose Category",
-                ),
-                items: (_selectedCategoryType == CategoryType.income ? CategoryDB.instance.incomeCategoryListNotifier : CategoryDB.instance.expenseCategoryListNotifier).value.map(
-                  (category) {
-                    print("dropdownValueIN - $dropDownValue value - ${category.key}, ${category.categoryName}");
-                    return DropdownMenuItem(
-                      value: category.key,
-                      child: Text(category.categoryName),
-                    );
-                  },
-                ).toList(),
-                onChanged: (newValue) {
-                  print(" newvalue - $newValue");
-                  setState(() {
-                    dropDownValue = newValue;
-                  });
-                },
-              ),
-
-              /* FEATURE 
-              Add option to create new category if category is not present or empty 
-              */
-
-              const SizedBox(height: 15),
-              //Category Type
-              //xxx- commented out because since category dropdown items are of type CategoryModel, it will also have its categoryType. we can compare the key of the selected item with the item in the database. xxx
-              //uncommented because this enables us to select category having similar Type
-
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      const Text("Income"),
-                      Radio<CategoryType>(
-                        value: CategoryType.income,
-                        groupValue: _selectedCategoryType,
-                        onChanged: (newValue) {
-                          //if (newValue == null) return;
-                          setState(() {
-                            dropDownValue = null;
-                            _selectedCategoryType = newValue;
-                            //To avoid mismatch error, ie; checking the value/item in the dropdown within some other list
-                          });
-                          print("dropdown income - $dropDownValue");
-                        },
-                      ),
-                    ],
+      body: FocusScope(
+        node: FocusScopeNode(),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Purpose
+                const TextField(
+                  decoration: InputDecoration(
+                    label: Text("Transaction Name"),
+                    border: OutlineInputBorder(),
                   ),
-                  Row(
-                    children: [
-                      const Text("Expense"),
-                      Radio<CategoryType>(
-                        value: CategoryType.expense,
-                        groupValue: _selectedCategoryType,
-                        onChanged: (newValue) {
-                          print("dropdown exp  type: $newValue");
-                          setState(() {
-                            dropDownValue = null;
-                            _selectedCategoryType = newValue;
-                          });
-                          print("dropdown expense - $dropDownValue");
-                        },
-                      ),
-                    ],
+                ),
+                const SizedBox(height: 15),
+                //Amount
+                const TextField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    label: Text("Amount"),
+                    border: OutlineInputBorder(),
                   ),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton.icon(
-                    onPressed: () async {
-                      final date = await handleDatePicking(context);
-                      if (date == null) return;
-
+                ),
+                const SizedBox(height: 15),
+                //Category Dropdown
+                Focus(
+                  focusNode: _dropdownFocusNode,
+                  child: DropdownButtonFormField(
+                    value: dropDownValue,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Choose Category",
+                    ),
+                    items: (_selectedCategoryType == CategoryType.income ? CategoryDB.instance.incomeCategoryListNotifier : CategoryDB.instance.expenseCategoryListNotifier).value.map(
+                      (category) {
+                        return DropdownMenuItem(
+                          value: category.key,
+                          child: Text(category.categoryName),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (newValue) {
                       setState(() {
-                        //print(date.toString());
-                        _selectedDate = date;
+                        dropDownValue = newValue;
                       });
                     },
-                    icon: const Icon(Icons.date_range),
-                    label: const Text("Pick Date"),
                   ),
-                  _selectedDate == null
-                      ? const SizedBox()
-                      : Chip(
-                          label: Text(
-                            DateFormat.yMMMd().format(_selectedDate!),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                ),
+
+                /* FEATURE 
+                Add option to create new category if category is not present or empty 
+                */
+
+                const SizedBox(height: 15),
+                //Category Type
+                //xxx- commented out because since category dropdown items are of type CategoryModel, it will also have its categoryType. we can compare the key of the selected item with the item in the database. xxx
+                //uncommented because this enables us to select category having similar Type
+
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        const Text("Income"),
+                        Radio<CategoryType>(
+                          value: CategoryType.income,
+                          groupValue: _selectedCategoryType,
+                          onChanged: (newValue) {
+                            _dropdownFocusNode.unfocus();
+                            setState(() {
+                              dropDownValue = null;
+                              _selectedCategoryType = newValue;
+                              //To avoid mismatch error, ie; checking the value/item in the dropdown within some other list
+                            });
+                          },
                         ),
-                ],
-              ),
-            ],
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text("Expense"),
+                        Radio<CategoryType>(
+                          value: CategoryType.expense,
+                          groupValue: _selectedCategoryType,
+                          onChanged: (newValue) {
+                            _dropdownFocusNode.unfocus();
+                            setState(() {
+                              dropDownValue = null;
+                              _selectedCategoryType = newValue;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () async {
+                        final date = await handleDatePicking(context);
+                        if (date == null) return; // close the popup
+
+                        setState(() {
+                          _selectedDate = date;
+                        });
+                      },
+                      icon: const Icon(Icons.date_range),
+                      label: const Text("Pick Date"),
+                    ),
+                    _selectedDate == null
+                        ? const SizedBox()
+                        : Chip(
+                            label: Text(
+                              DateFormat.yMMMd().format(_selectedDate!),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -195,7 +201,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       firstDate: DateTime.now().subtract(const Duration(days: 30)),
       lastDate: DateTime.now(),
     );
-    //print(selectedDate.toString());
+
     if (selectedDate == null) return null;
     return selectedDate;
   }
