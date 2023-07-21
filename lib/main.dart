@@ -3,6 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:money_management_app/constants/routes.dart';
 import 'package:money_management_app/models/category/category_model.dart';
 import 'package:money_management_app/screens/home/home_screen.dart';
+import 'package:money_management_app/screens/pages/transaction/add_transaction_page.dart';
 
 import 'screens/pages/category/add_category_page.dart';
 
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomeScreen(),
       routes: {
-        Routes.newCategoryPageRoute: (context) => const AddNewCategoryPage(),
+        Routes.addCategoryPageRoute: (context) => const AddNewCategoryPage(),
+        Routes.addTransactionPageRoute: (context) => const AddTransactionPage(),
       },
     );
   }
