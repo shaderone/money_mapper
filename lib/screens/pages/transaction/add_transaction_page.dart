@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money_management_app/db/transaction/transaction_db.dart';
 import 'package:money_management_app/models/category/category_model.dart';
+import 'package:money_management_app/models/transaction/transaction_model.dart';
 
 import '../../../db/category/category_db.dart';
 
@@ -12,16 +14,11 @@ class AddTransactionPage extends StatefulWidget {
 }
 
 class _AddTransactionPageState extends State<AddTransactionPage> {
-  //List<CategoryModel> categoryList = [];
   @override
   void initState() {
     super.initState();
     //default value, else dropdown will throw error because the condition will return false (type is empty at first)
     _selectedCategoryType = CategoryType.income;
-    //WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //  categoryList = await CategoryDB.instance.getAllCategories();
-    //});
-    //temporary
     CategoryDB.instance.refreshUI();
   }
 
@@ -36,14 +33,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   final FocusNode _dropdownFocusNode = FocusNode();
 
+  final transactionPurposeController = TextEditingController();
+  final transactionAmountController = TextEditingController();
+
   @override
   void dispose() {
     _dropdownFocusNode.dispose();
     super.dispose();
-  }
-
-  void resetField() {
-    //unfocus any selected widget
   }
 
   @override
@@ -56,7 +52,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         actions: [
           ElevatedButton.icon(
             onPressed: () {
-              //handleNewTransaction();
+              handleNewTransaction();
+              Navigator.of(context).pop();
             },
             label: const Text("Done"),
             icon: const Icon(Icons.check_circle_outline_outlined),
@@ -73,17 +70,19 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //Purpose
-                const TextField(
-                  decoration: InputDecoration(
-                    label: Text("Transaction Name"),
+                TextField(
+                  controller: transactionPurposeController,
+                  decoration: const InputDecoration(
+                    label: Text("Transaction Purpose"),
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 15),
                 //Amount
-                const TextField(
+                TextField(
+                  controller: transactionAmountController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     label: Text("Amount"),
                     border: OutlineInputBorder(),
                   ),
@@ -103,10 +102,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         return DropdownMenuItem(
                           value: category.key,
                           child: Text(category.categoryName),
+                          onTap: () {
+                            _selectedCategory = category;
+                          },
                         );
                       },
                     ).toList(),
                     onChanged: (newValue) {
+                      //value from dropdown
+
                       setState(() {
                         dropDownValue = newValue;
                       });
@@ -204,5 +208,24 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     if (selectedDate == null) return null;
     return selectedDate;
+  }
+
+  Future<void> handleNewTransaction() async {
+    final purposeText = transactionPurposeController.text;
+    final amountText = transactionAmountController.text;
+
+    if (purposeText.isEmpty || amountText.isEmpty || _selectedDate == null || _selectedCategory == null) {
+      return;
+    }
+
+    final transactionInfo = TransactionModel(
+      purpose: purposeText,
+      amount: double.parse(amountText),
+      date: _selectedDate!,
+      transactionCategory: _selectedCategory!,
+      categoryType: _selectedCategoryType!,
+    );
+
+    TransactionDB.instance.createNewTransaction(transactionInfo);
   }
 }
