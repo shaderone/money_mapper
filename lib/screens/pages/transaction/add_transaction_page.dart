@@ -52,8 +52,25 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         actions: [
           ElevatedButton.icon(
             onPressed: () {
-              handleNewTransaction();
-              Navigator.of(context).pop();
+              if (handleNewTransaction()) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Transaction Added"),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    duration: const Duration(seconds: 2),
+                    margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                    behavior: SnackBarBehavior.floating,
+                    elevation: 0,
+                    action: SnackBarAction(
+                      label: "OK",
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
             },
             label: const Text("Done"),
             icon: const Icon(Icons.check_circle_outline_outlined),
@@ -210,12 +227,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     return selectedDate;
   }
 
-  Future<void> handleNewTransaction() async {
+  bool handleNewTransaction() {
     final purposeText = transactionPurposeController.text;
     final amountText = transactionAmountController.text;
 
     if (purposeText.isEmpty || amountText.isEmpty || _selectedDate == null || _selectedCategory == null) {
-      return;
+      return false;
     }
 
     final transactionInfo = TransactionModel(
@@ -227,5 +244,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     );
 
     TransactionDB.instance.createNewTransaction(transactionInfo);
+    return true;
   }
 }

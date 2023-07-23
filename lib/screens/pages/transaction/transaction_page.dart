@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:money_management_app/models/category/category_model.dart';
 import 'package:money_management_app/screens/home/home_screen.dart';
 
 import '../../../db/transaction/transaction_db.dart';
@@ -62,35 +64,165 @@ class TransactionListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: transactionBox.listenable(),
-        builder: (BuildContext context, Box<TransactionModel> transactionBox, Widget? _) {
-          return transactionBox.length == 0
-              ? const Center(
-                  child: Text("List is empty"),
-                )
-              : ListView.separated(
+      valueListenable: transactionBox.listenable(),
+      builder: (BuildContext context, Box<TransactionModel> transactionBox, Widget? _) {
+        if (transactionBox.length == 0) {
+          return const Center(
+            child: Text("List is empty"),
+          );
+        } else {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        const Text(
+                          "Income",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            color: Colors.amber,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        const Text(
+                          "Expense",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   itemCount: transactionBox.length,
                   itemBuilder: (BuildContext context, int index) {
                     final tranasction = transactionBox.values.toList()[index];
                     final parsedDate = DateFormat.yMMMd().format(tranasction.date);
-                    return ListTile(
-                      minVerticalPadding: 20,
-                      onTap: () {},
-                      title: Text(
-                        tranasction.purpose,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                    final categoryType = tranasction.categoryType;
+                    return Slidable(
+                      key: const ValueKey(0),
+                      startActionPane: const ActionPane(
+                        extentRatio: 0.25,
+                        motion: ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: null,
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.blue,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                          ),
+                        ],
+                      ),
+                      endActionPane: const ActionPane(
+                        extentRatio: 0.25,
+                        motion: DrawerMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: null,
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.red,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                            autoClose: true,
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            spacing: 0,
+                          ),
+                        ],
+                      ),
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        margin: const EdgeInsets.all(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: categoryType == CategoryType.income
+                                  ? [
+                                      const Color.fromARGB(255, 250, 251, 255),
+                                      const Color.fromARGB(255, 234, 240, 255),
+                                    ]
+                                  : [
+                                      const Color.fromARGB(255, 255, 250, 246),
+                                      const Color.fromARGB(255, 255, 241, 232),
+                                    ],
+                              stops: const [0, 1],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(5),
+                                  bottomRight: Radius.circular(5),
+                                ),
+                                child: Container(
+                                  height: 40,
+                                  width: 5,
+                                  color: categoryType == CategoryType.income ? Colors.blue : Colors.amber,
+                                ),
+                              ),
+                              Expanded(
+                                child: ListTile(
+                                  minVerticalPadding: 20,
+                                  onTap: () {},
+                                  title: Text(
+                                    tranasction.purpose,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(parsedDate),
+                                  trailing: Text(
+                                    "${tranasction.amount.toInt().toString()}₹",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      subtitle: Text(parsedDate),
-                      trailing: Text(tranasction.amount.toString()),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return const Divider(height: 1);
+                    return const SizedBox();
                   },
-                );
-        });
+                ),
+              ),
+            ],
+          );
+        }
+      },
+    );
   }
 }
