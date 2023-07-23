@@ -48,7 +48,7 @@ class TransactionAppbarWidget extends StatelessWidget {
           }),
       actions: [
         IconButton(onPressed: () {}, icon: const Icon(Icons.clean_hands_rounded)),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.check_box_outline_blank)),
+        //IconButton(onPressed: () {}, icon: const Icon(Icons.check_box_outline_blank)),
       ],
     );
   }
@@ -139,18 +139,20 @@ class TransactionListWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      endActionPane: const ActionPane(
+                      endActionPane: ActionPane(
                         extentRatio: 0.25,
-                        motion: DrawerMotion(),
+                        motion: const DrawerMotion(),
                         children: [
                           SlidableAction(
-                            onPressed: null,
+                            onPressed: (context) {
+                              handleTransactionDeletion(context, index);
+                            },
                             backgroundColor: Colors.transparent,
                             foregroundColor: Colors.red,
                             icon: Icons.delete,
                             label: 'Delete',
                             autoClose: true,
-                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            padding: const EdgeInsets.symmetric(horizontal: 0),
                             spacing: 0,
                           ),
                         ],
@@ -222,6 +224,37 @@ class TransactionListWidget extends StatelessWidget {
             ],
           );
         }
+      },
+    );
+  }
+
+  Future<void> handleTransactionDeletion(BuildContext context, int index) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Delete Transaction?',
+            style: TextStyle(fontSize: 18),
+          ),
+          //content: const Text('Do you want to delete?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                transactionBox.deleteAt(index);
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Add code for 'No' button action here
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
       },
     );
   }
