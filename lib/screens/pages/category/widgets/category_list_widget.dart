@@ -16,7 +16,7 @@ class CategoryListWidget extends StatelessWidget {
         : ListView.separated(
             physics: const BouncingScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              final category = categoryList[index];
+              final category = categoryList.reversed.toList()[index];
               return ListTile(
                 minVerticalPadding: 20,
                 title: Text(category.categoryName),
@@ -29,7 +29,7 @@ class CategoryListWidget extends StatelessWidget {
               );
             },
             separatorBuilder: (BuildContext context, int index) {
-              return index == 0 ? const SizedBox() : const Divider(height: 1);
+              return const SizedBox();
             },
             itemCount: categoryList.length,
           );

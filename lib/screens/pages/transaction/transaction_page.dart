@@ -121,7 +121,7 @@ class TransactionListWidget extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemCount: transactionBox.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final tranasction = transactionBox.values.toList()[index];
+                    final tranasction = transactionBox.values.toList().reversed.toList()[index];
                     final parsedDate = DateFormat.yMMMd().format(tranasction.date);
                     final categoryType = tranasction.categoryType;
                     return Slidable(
